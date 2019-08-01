@@ -1,0 +1,6 @@
+https://keycode.info/
+https://stackoverflow.com/questions/1223764/how-to-trap-double-key-press-in-javascript
+https://stackoverflow.com/questions/5203407/how-to-detect-if-multiple-keys-are-pressed-at-once-using-javascript/12444641
+https://gist.github.com/fanglijun/7912811
+https://medium.com/javascript-in-plain-english/how-to-detect-a-sequence-of-keystrokes-in-javascript-83ec6ffd8e93
+https://www.jqueryscript.net/other/Double-Keypress-Plugin-jQuery.html
