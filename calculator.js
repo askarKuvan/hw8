@@ -1,6 +1,10 @@
 // this gives us the order of the buttons, which we can use to step through the buttons in various directions
 // since we know the layout, + 1 moves to the next item, -1 previous, +4 is one row down, -4 is one row up
 buttonOrder = ["#button7","#button8","#button9","#buttonDivide","#button4","#button5","#button6","#buttonMultiply","#button1","#button2","#button3","#buttonAdd","#button0","#buttonClear","#buttonEquals","#buttonSubtract"];
+let pressed = null;
+var firstPress = false;
+var intervalID;
+var timerOn=false; var start; var end;
 
 // add the selected class to an item. you can pass this any jquery selector, such as #id or .class
 // calling this will de-select anything currently selected
@@ -20,7 +24,7 @@ function getSelectedItem() {
 	}
 	else {
 		return "#" + selected.first().attr('id')
-	} 
+	}
 }
 
 // the next four functions move the selected UI control
@@ -53,7 +57,7 @@ function selectPrevious() {
 		index = (index - 1);
 		if (index < 0) index = buttonOrder.length + index
 		selectItem(buttonOrder[index])
-	}	
+	}
 }
 
 function selectUp() {
@@ -89,18 +93,31 @@ function clickSelectedItem() {
 	}
 }
 
+
+var lastKeypressTime = 0;
+var zeroLastPress = 0;
 // this function responds to user key presses
 // you'll rewrite this to control your interface using some number of keys
 $(document).keydown(function(event) {
-	
+
 	var keyCode = (event.keyCode ? event.keyCode : event.which);
-	if (event.key == "a")
+	if (keyCode == 27) // button s
 	{
-		alert("You pressed the 'a' key!");	
-	} 
-	else if (event.key == "b") 
+		clearInterval(intervalID);
+		firstPress=false;
+	}
+	if (keyCode == 83) // button s
 	{
-		alert("You pressed the 'b' key!");
+		if(!timerOn)
+		{
+			timerOn=true;
+			start = new Date();
+		}
+		else {
+			timerOn=false;
+			end = new Date;
+			alert("duration: "+(end-start));
+		}
 	}
 	else if(keyCode==37) // left-arrow button
     {
@@ -120,35 +137,55 @@ $(document).keydown(function(event) {
     }
 	else if(keyCode==13) // enter buttons
 	{
-		clickSelectedItem();		
+		clickSelectedItem();
     }
-	
+
 	else if(keyCode==32) // space button
     {
 		if(isRow)
+		{
 			selectNextRow();
+		}
 		else
-			selectNext();
+		{
+			var thisKeypressTime = new Date();
+			if ( thisKeypressTime - lastKeypressTime <= 250 )//double press of space
+			{
+				selectItem(null);
+				isRow = true;
+				buttonOrderInRow =[];
+				// optional - if we'd rather not detect a triple-press
+				// as a second double-press, reset the timestamp
+				thisKeypressTime = 0;
+			}
+			else //single press of space
+			{
+				selectNextInRow();
+			}
+			lastKeypressTime = thisKeypressTime;
+		}
+
     }
-	else if(keyCode==18) // 0 buttons
+	else if(keyCode==18) // alt buttons
 	{
 		if(isRow)
 			clickSelectedRow();
 		else
 			clickSelectedItem();
     }
-		
-})
-
-$('input.foo').bind('keyup', 'ctrl+z', function(){
-	alert("shortcup");
-	if(!isRow)
+	else if(keyCode==48) // 0 buttons
 	{
-		selectItem(null);
-		isRow = true;
-	}
-});
-
+		if(firstPress)
+		{
+			clickSelectedItem();
+		}
+		else
+		{
+			firstPress=true;
+			intervalID= setInterval(selectNext,500);
+		}
+    }
+})
 
 /* calculator stuff below here */
 // for operations, we'll save + - / *
@@ -162,7 +199,7 @@ operators = "+-*/"
 // handle calculator functions. all buttons with class calcButton will be handled here
 $(".calcButton").click(function(event) {
 	buttonLabel = $(this).text();
-	
+
 	// if it's a number, add it to our display
 	if (digits.indexOf(buttonLabel) != -1) {
 		// if we weren't just adding a number, clear our screen
@@ -220,7 +257,7 @@ function evaluateExpression(first,op,second) {
 	} else if (op == "/") {
 		output = parseInt(first) / parseInt(second);
 	}
-	
+
 	// now, handle it
 	$("#number_input").val(output.toString());
 	// deal with state elsewhere
@@ -231,6 +268,7 @@ function evaluateExpression(first,op,second) {
 rowOrder = ["#row_1", "#row_2", "#row_3", "#row_4"];
 rowFirstOrder = ["#button7", "#button4", "#button1", "#button0"]
 isRow = true;
+let buttonOrderInRow = [];
 
 // add the selected class to an item. you can pass this any jquery selector, such as #id or .class
 // calling this will de-select anything currently selected
@@ -250,10 +288,10 @@ function getSelectedRow() {
 	}
 	else {
 		return "#" + selectedRow.first().attr('id')
-	} 
+	}
 }
 
-function selectNextRow() 
+function selectNextRow()
 {
 	isRow = true;
 	selectedRow = getSelectedRow();
@@ -272,22 +310,15 @@ function selectNextRow()
 function clickSelectedRow() {
 	isRow = false;
 	whichRow = getSelectedRow();
-	
-	//*
-	var rowContainer = document.getElementById(whichRow.substring(1));
-	//alert(rowContainer);
-	var rowButtons = rowContainer.getElementsByClassName("calcButton");
-	alert(rowButtons[0].id);
-	//alert(rowButtons.getAttribute('id'));
-	//var buttonOrderInRow = rowButtons.map(btn => btn.id);
-	//alert(buttonOrderInRow);
-	//*/
-	
+	let rowContainer = document.getElementById(whichRow.substring(1));
+	let rowButtons = rowContainer.getElementsByClassName("calcButton");
+	for (var i = 0; i < rowButtons.length; i++)
+		buttonOrderInRow.push('#'+rowButtons[i].id);
+	// alert(buttonOrderInRow);
+
 	if (whichRow != null) {
 		//$(whichRow).click();
 		first_button_in_row = rowFirstOrder[indexRow];
-		alert("you selected row "+whichRow);
-		alert("first_button_in_row "+first_button_in_row);
 		selectItem(first_button_in_row);
 	}
 }
@@ -297,8 +328,8 @@ function selectNextInRow() {
 	if (selected == null) {
 		selectItem(buttonOrder[0]);
 	} else {
-		index = buttonOrder.indexOf(selected);
-		index = (index + 1) % buttonOrder.length;
-		selectItem(buttonOrder[index])
+		indexInRow = buttonOrderInRow.indexOf(selected);
+		indexInRow = (indexInRow + 1) % buttonOrderInRow.length;
+		selectItem(buttonOrderInRow[indexInRow])
 	}
 }

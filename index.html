@@ -38,15 +38,50 @@
 			</div>
 		</div>
 		<div id="comments">
-			<h2>About this app</h2>
-			<p>Include information here about your app.</p>
-			<ul>
-				<li>Instructions for using the app</li>
-				<li>Test results</li>
-				<li>Anything else you have tried out</li>
-			</ul>
+			<h1>About this app</h1>
+				<h2>Instructions</h2>
+					<p>I have implemented several versions of control for this app. Keys for each version don't overlap, but in order to switch to other version refresh of the page is needed.</p>
+					<ul>
+						<li><strong>5-keys: </strong>  Can be done using 4 arrow buttons and any of two Enter buttons for <em>clickSelectedItem</em></li>
+						<li><strong>3-keys: </strong>  Can be done using left(selectNext) and right(selectPrevious) and any of two Enter buttons for <em>clickSelectedItem</em></li>
+						<li><strong>2-keys: </strong>  Can be done using left(selectNext) and any of two Enter buttons for <em>clickSelectedItem</em></li>
+						<li><strong>2-keys alternative: </strong>  In this version, there are two ways that space button works depending on what is selected. At first, by pressing space button you can switch between rows.
+						<p>After you switch to row you need, you can press 'alt' button to select the row. Now you can switch between buttons inside that row using space button and select the button using 'alt' button.</p>
+						<p>If you want to change from button selection back to row selection, then you need to quickly press space button twice.</p></li>
+						<li><strong>1-key: </strong> After pressing '0' button, app will start switching between buttons itself. If you want to <em>clickSelectedItem</em> while it's "selected" (yellow), then you need press '0' button.</li>
+					</ul>
+				<h2>Test Equations</h2>
+					<p>Following equations were used in the test to use all buttons of app. As you might notice, after each equation I made it required to press '=' button and then 'C' button.</p>
+					<ul>
+						<li>25*34 <strong> = C </strong></li>
+						<li>60+9 <strong> = C </strong></li>
+						<li>71-8 <strong> = C </strong></li>
+						<li>128/4 <strong> = C </strong></li>
+						<li>8*3/2+10-12 <strong> = C </strong></li>
+					</ul>
+				<h2>Test Equations</h2>
+					<p>I tested each version 5 times for all five equations. Two different ways of input was tested: 1) with any fingers of one hand, 2) with any part of closed fist of one hand.</p>
+					<p>I measured time using javascript: by pressing 's' button at the beginning of experiment and pressing it again at the end.
+						After pressing 's' for the second time, alert that shows how many milliseconds have passed occurs.</p>
+					<p>Here are average results in milliseconds:
+						<table border="2">
+							<tr><th></th><th>5-keys</th><th>3-keys</th><th>2-keys</th><th>2-keys alt</th><th>1-key (750ms interval)</th><th>1-key (500ms interval)</th></tr>
+							<tr><td>With any fingers of one hand</td><td>65764</td><td>104708</td><td>124754</td><td>221343</td><td>253301</td><td>264740</td></tr>
+							<tr><td>With any part of closed fist of one hand</td><td>104940</td><td>117165</td><td>138483</td><td>250341</td><td>267488</td><td>313953</td></tr>
+						</table>
+				<h2>Observations, Comparisons and Conclusion</h2>
+					<ul>
+						<li><strong>5-keys: </strong>  Using fist took much more time because four arrow buttons were close to each other and using fist uncomfortable.</li>
+						<li><strong>3-keys: </strong>  Finger and fist inputs seem to have similar time results. Maybe 'finger-input' version should have taken less time, but sometimes my brain was mistakenly pressing disabled up and down arrow buttons from previous results.</li>
+						<li><strong>2-keys: </strong>  In this version there is no <em>selectPrevious</em> button. As the result, it took a lot of time to press <strong> C </strong> button each time after pressing <strong> = </strong> button. Else, it's really uncomfortable if you pass over the button you wanted to press trying to speed up the selection.</li>
+						<li><strong>2-keys alternative: </strong> This version was supposed to reduce time comparing to <strong>2-keys: </strong> version, because it's easier to navigate. However, getting used to different type of navigation was time-consuming. Else, because double press was used for space button, sometimes app was confusing two consequent single presses with double press.</li>
+						<li><strong>1-key (750ms interval): </strong> Here you have to wait until app selects the button, cause you can't select it yourself. Because of it you feel luck of control, especially when you miss your opportunity to press the button and you have to wait again. Else, it quickly gets boring and tiring for eyes while waiting for selection.</li>
+						<li><strong>1-key (500ms interval): </strong> Although it may seem like that decreasing selection interval should decrease task time, it doesn't work that way. It's because with faster selection number of mistakes increases.</li>
+					</ul>
+					<p> Finally, last thing to mention is that time using fist-input was always higher than time using finger-input, which is expected behaviour.</p>
 		</div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
+		<script src="jquery.double-keypress.js"></script>
 		<script src="calculator.js" type="text/javascript"></script>
 	</body>
 </html>
